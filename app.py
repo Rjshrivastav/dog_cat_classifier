@@ -27,9 +27,11 @@ def load__model():
 
 def predict(fullpath):
     data = image.load_img(fullpath, target_size=(256, 256, 3))
+    data = image.img_to_array(data)
     data = np.expand_dims(data, axis=0)
     # Scaling
-    data = data.astype('float') / 255
+    #data = data.astype('float') / 255
+    data = preprocess_input(data, mode='caffe')
 
     # Prediction
 
