@@ -27,7 +27,6 @@ def load__model():
 
 def predict(fullpath):
     data = image.load_img(fullpath, target_size=(256, 256, 3))
-    # (150,150,3) ==> (1,150,150,3)
     data = np.expand_dims(data, axis=0)
     # Scaling
     data = data.astype('float') / 255
@@ -81,4 +80,5 @@ def create_app():
 
 
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True)
