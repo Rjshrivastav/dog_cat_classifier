@@ -40,7 +40,7 @@ def predict(fullpath):
 
 
 # Home Page
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html')
 
