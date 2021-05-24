@@ -3,7 +3,9 @@ from flask import Flask, render_template, request, send_from_directory
 from keras_preprocessing import image
 from keras.models import load_model
 import numpy as np
-import tensorflow as tf
+from keras.applications.imagenet_utils import preprocess_input, decode_predictions
+from werkzeug.utils import secure_filename
+from gevent.pywsgi import WSGIServer
 
 app = Flask(__name__)
 
@@ -13,16 +15,7 @@ UPLOAD_FOLDER = STATIC_FOLDER + '/uploads'
 # Path to the folder where we store the different models
 MODEL_FOLDER = STATIC_FOLDER + '/model'
 
-
-def load__model():
-    """Load model once at running time for all the predictions"""
-    print('[INFO] : Model loading ................')
-    global model
-    # model = tf.keras.models.load_model(MODEL_FOLDER + '/catsVSdogs.h5')
-    model = load_model(MODEL_FOLDER + '/dogs_cat.h5')
-    global graph
-    graph = tf.get_default_graph()
-    print('[INFO] : Model loaded')
+model = load_model(MODEL_FOLDER + '/dogs_cat.h5')
 
 
 def predict(fullpath):
@@ -34,9 +27,7 @@ def predict(fullpath):
     data = preprocess_input(data, mode='caffe')
 
     # Prediction
-
-    with graph.as_default():
-        result = model.predict(data)
+    result = model.predict(data)
 
     return result
 
@@ -76,11 +67,5 @@ def send_file(filename):
     return send_from_directory(UPLOAD_FOLDER, filename)
 
 
-def create_app():
-    load__model()
-    return app
-
-
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True)
